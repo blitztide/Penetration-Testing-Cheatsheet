@@ -748,12 +748,20 @@ Virtualbox 00:21:F6
 	\item \textbf{\_kpasswd.\_tcp.<endpoint fqdn>} - Kerberos Server ()
 \end{itemize}
 \end{tcolorbox}
-\begin{tcolorbox}[breakable,title=Wireshark Filters]
-	Capture Filters:
-	
-	Packet Filters:
+\begin{tcolorbox}[breakable,title=tcpdump]
+\underline{\textbf{Flags}}\\
+\newline
+\textbf{-i} - Select interface (tun0)\\
+\textbf{-T} - Select packets by type (snmp, tftp, etc)\\
+\textbf{-w} - Write packets to file\\
+\textbf{-v} - Verbose (when used with -w, gives updates on packets every 10s)\\
+\textbf{-r} - Read pcap from file (can be used with -w to modify pcaps)\\
+\underline{\textbf{Filters}}\\
+\textit{tcpdump host 127.0.0.1} - Only log packets from host 127.0.0.1 (works with dns names)\\
+\textit{tcpdump host localhost and (host1 or host 2)} - Prints traffic from local host and either host1 or host 2\\
+\textit{tcpdump tcp port 80} - Only log TCP port 80 traffic
 \end{tcolorbox}
-\begin{tcolorbox}[breakable,title=tcpdump flags]
-	
+\newpage
+\begin{tcolorbox}[height=\textheight,width=\linewidth,title=Notes]
 \end{tcolorbox}
 \end{document}
