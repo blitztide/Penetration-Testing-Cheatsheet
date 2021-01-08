@@ -1,0 +1,697 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[defaultsans]{droidsans}
+\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be typewriter style
+\usepackage[T1]{fontenc}
+\usepackage{lastpage}
+%\usepackage{draftwatermark}
+\usepackage{subfiles}
+\usepackage{tabularx}
+\usepackage{colortbl}
+\usepackage{multicol}
+\usepackage[toc]{appendix}
+\usepackage{pdfpages}
+\usepackage{float}
+\usepackage{tocloft} % fix formatting on ToC
+\tocloftpagestyle{fancy}
+\usepackage{tcolorbox} %Pretty boxes
+\tcbuselibrary{listings} %Allow pretty boxes to be compatible with listings
+\tcbuselibrary{breakable} %allow pretty boxes to flow over page boundaries
+\usepackage{minted} %Pretty code
+\usepackage[linktocpage=true]{hyperref}
+\usepackage{subcaption} % Allows subfigures
+%Fix alignment on ToC
+\cftsetindents{section}{0em}{1.5em}
+\cftsetindents{subsection}{3em}{4em}
+\cftsetindents{subsubsection}{6em}{4em}
+\renewcommand{\arraystretch}{1.3}
+\usepackage[top=2cm, bottom=2cm, outer=1cm, inner=1cm]{geometry}
+\usepackage{wallpaper}
+%\setlength{\columnseprule}{1pt}
+\begin{document}
+\ThisCenterWallPaper{1.2}{title.jpg}
+\centering
+\begin{tcolorbox}[width=0.75\linewidth]
+	\huge
+	\centering
+	\textbf{Penetration Testing Cheat Sheet}
+\end{tcolorbox}
+\vfill
+\begin{tcolorbox}[width=0.6\linewidth]
+	\centering
+	\large
+	First Edition
+\end{tcolorbox}
+\clearpage
+\Huge{\textbf{Network Enumeration}}
+\newline
+\normalsize
+\begin{multicols}{2}
+\begin{tcolorbox}[breakable, title=Nmap]
+\textbf{Switches}:\\
+\textit{-oA} output all formats\\
+\textit{-O} Operating System enumeration\\
+\textit{-p} Port specification (-p- for all ports)\\
+\textit{-sC} Script Enumeration\\
+\textit{-sV} Version Enumeration (full tcp connect)\\
+\textit{-sU} UDP enumeration\\
+\textit{--script=} Script selection\\
+\textit{-Pn} Disable ping probes\\
+\textit{-iL} Include hosts from file\\
+\textit{--script-args} Provide arguments to NMAP scripts\\
+\newline
+\textbf{Useful Scripts}:\\
+\textit{default} - Default Scripts\\
+\textit{vuln} - Enumerate vulnerabilities\\
+\textit{ftp-*} - All FTP Scripts\\
+\textit{http-*} - All HTTP Scripts\\
+\textit{smb-*} - All SMB Scripts\\
+\textit{nfs-*} - All NFS Scripts\\
+\textit{ldap-search} - Performs ldap search\\
+\textit{vulners} Searches for CVEs on returned services\\
+\end{tcolorbox}
+\begin{tcolorbox}[breakable, title=Windows commands]
+\textit{arp -a} Show ARP table\\
+\textit{ipconfig /all} Shows IP configuration\\
+\textit{ping} ICMP Echo requests\\
+\end{tcolorbox}
+\begin{tcolorbox}[breakable, title=Linux commands]
+\textit{arp -a} Show ARP table\\
+\textit{ping} ICMP Echo requests\\
+\textit{ip address} Show IP configuration\\
+\textit{ifconfig} Show interface configuration\\
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Packet Capture]
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{wireshark}
+	\item \textbf{tshark}
+	\item \textbf{tcpdump}
+	\item \textbf{netsh trace start capture=yes; netsh trace stop}
+\end{itemize}
+\end{tcolorbox}
+\end{multicols}
+
+\vspace{1cm}
+\Huge{\textbf{Service Enumeration}}
+\newline
+\normalsize
+\begin{multicols}{2}
+\begin{tcolorbox}[breakable, title=FTP]
+Checklist:
+\begin{itemize}
+	\item Anonymous Access
+	\item Vulnerabilities\\ Service name be taken from banner grabs
+	\item Default Credentials
+\end{itemize}
+Tools:
+\begin{itemize}
+	\item Filezilla
+	\item ftp (inbuilt linux)
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable, title=DNS]
+Checklist:
+\begin{itemize}
+	\itemsep0em 
+	\item look for PTR records for the DNS server IP address
+	\item look for PTR records for whole IP range
+	\item Check for zone transfers
+	\item Enumerate Windows AD DNS entries
+	\item Enumerate MX records
+	\item Enumerate SPF records (Email Security)
+	\item Enumerate DKIM records (Email Security)
+	\item Enumerate DMARC records
+\end{itemize}
+Tools:
+\begin{itemize}
+	\itemsep0em 
+	\item \textbf{dig}
+	\item \textbf{host}
+	\item \textbf{nslookup}
+	\item \textbf{gobuster}
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Group Policy]
+Checklist:
+\begin{itemize}
+	\itemsep0em
+	\item Stored Credentials
+	\item Automated Scripts (privesc)
+\end{itemize}
+Tools:
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{Active Directory Group Policy Manager}
+	\item \textbf{SYSVOL}
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[title=HTTP/HTTPS]
+Checklist:
+\begin{itemize}
+	\itemsep0em 
+	\item Check common files (robots.txt .htaccess)
+	\item Identify Web technologies:
+	\item HTTP Server (IIS, Apache, Nginx)
+	\item Preprocessors (Ruby on Rails, PHP, ASP)
+	\item Web Applications (Wordpress, Drupal, Sharepoint)
+	\item SSL Certificate Enumeration (Domain names, locations)
+	\item Web Application Firewalls
+	\item Check for VHOSTS (DNS enumeration can help)
+	\item Check authentication technologies (JWT, Cookies, SAML, SSO, AD)
+	\item Check for XSS
+	\item Check for SQLi
+	\item Check for LFI/RFI
+	\item Check for shellshock
+\end{itemize}
+Tools:
+\begin{itemize}
+	\itemsep0em	
+	\item \textbf{Gobuster} DNS/Directory brute forcer
+	\item \textbf{dirb} Directory brute forcer
+	\item \textbf{Burp Suite} HTTP Proxy
+	\item \textbf{Zed Attack Proxy} HTTP Proxy
+	\item \textbf{wpscan} WordPress vulnerability scanner
+	\item \textbf{drupalgeddon} Drupal vulnerability scanner
+	\item \textbf{curl} HTTP request tool
+	\item \textbf{wget} HTTP downloader
+	\item \textbf{sqlmap} SQL Injection scanner
+	\item \textbf{nmap --script=http-shellshock}
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[breakable, title=KERBEROS]
+Checklist:
+\begin{itemize}
+	\itemsep0em
+	\item Enumerate Domain Users
+	\item Pass the Ticket
+	\item ASREPRoast
+	\item Pass the Key
+	\item Silver Ticket
+	\item Golden Ticket
+\end{itemize}
+Tools:
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{Mimikatz}
+	\item \textbf{Impacket}
+	\item \textbf{PsExec}
+	\item \textbf{kerbrute} Kerberos password brute forcing
+	\item \textbf{GetNPUsers.py} Locate ASREPRoastable users
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable, title=LDAP]
+Checklist:
+\begin{itemize}
+	\itemsep0em
+	\item Users and Groups
+	\item Privileged Groups
+	\item Company layout
+	\item Computers
+\end{itemize}
+Tools:
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{Active Directory Users and Computers}
+	\item \textbf{python3 ldap3 module}
+	\item \textbf{powershell}
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable, title=MYSQL/MariaDB]
+Checklist:
+\begin{itemize}
+	\itemsep0em
+	\item Check for CVEs
+	\item Enumerate interesting databases
+\end{itemize}
+Tools:
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{mysql}
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=NETBIOS]
+Checklist:
+\begin{itemize}
+	\itemsep0em
+	\item Discover Hosts on network segment
+\end{itemize}
+Tools:
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{nbtscan}
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable, title=NFS]
+Checklist:
+\begin{itemize}
+	\itemsep0em
+	\item Anonymous/Guest access
+	\item Sensitive file disclosure
+\end{itemize}
+Tools:
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{showmount}
+	\item \textbf{nmap --script=nfs*}
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=NTP]
+Checklist:
+\begin{itemize}
+	\itemsep0em
+	\item Synchronise time with host
+	\item Enumerate connected clients
+	\item Enumerate version information
+\end{itemize}
+Tools:
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{nmap --script=ntp-info}
+	\item \textbf{ntpq}
+	\item \textbf{ntpdc}
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable, title=RDP]
+Checklist:
+\begin{itemize}
+	\itemsep0em
+	\item Screenshots
+	\item User Enumeration
+	\item Check for RDP Vuln
+	\item OS Version check
+\end{itemize}
+Tools:
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{mstsc.exe}
+	\item \textbf{rdesktop}
+	\item \textbf{remmina}
+	\item \textbf{nmap}
+	\item \textbf{crowbar}
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable, title=RPC]
+Checklist:
+\begin{itemize}
+	\itemsep0em
+	\item Anonymous login
+	\item Enumerate Domain information
+	\item Enumerate System information
+\end{itemize}
+Tools:
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{rpcclient}
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable, title=SMB]
+Checklist:
+\begin{itemize}
+	\itemsep0em
+	\item Anonymous/null session access
+	\item Sensitive file disclosure
+	\item Exposed shares
+	\item SMB1 Vulnerability
+\end{itemize}
+Tools:
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{smbclient}
+	\item \textbf{smbenum}
+	\item \textbf{smbmap}
+	\item \textbf{crackmapexec.py}
+	\item \textbf{enum4linux}
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable, title=SMTP]
+Checklist:
+\begin{itemize}
+	\itemsep0em
+	\item Verify email address existence
+	\item Send malicious emails
+\end{itemize}
+Tools:
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{nc}
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable, title=SNMP]
+Checklist:
+\begin{itemize}
+	\itemsep0em
+	\item Default Credentials
+	\item Network configuration
+\end{itemize}
+Tools:
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{snmpwalk}
+	\item \textbf{snmpenum}
+	\item \textbf{snmpcheck}
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=SSH]
+Checklist:
+\begin{itemize}
+	\itemsep0em
+	\item Reused SSH Keys %need to find the github repo
+	\item Version Information
+	\item Host information
+\end{itemize}
+Tools:
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{SSH}
+	\item \textbf{nmap --script=ssh2-enum-algos}
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable, title=VNC]
+Checklist:
+\begin{itemize}
+	\itemsep0em
+	\item Enumerate running OS
+	\item Screenshots
+	\item Check CVEs
+\end{itemize}
+Tools:
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{vncviewer}
+	\item \textbf{remmina}
+	\item \textbf{nmap --script=vnc-info}
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=WinRM]
+Checklist:
+\begin{itemize}
+	\itemsep0em
+	\item WMI Queries
+	\item Pass the Hash
+\end{itemize}
+Tools:
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{winrs}
+	\item \textbf{evil-winrm}
+	\item \textbf{test-wsman}
+\end{itemize}
+\end{tcolorbox}
+\end{multicols}
+\newpage
+\Huge{\textbf{Buffer Overflows}}
+\newline
+\normalsize
+\begin{tcolorbox}
+\textbf{Workflow}:
+\begin{enumerate}
+	\itemsep0em 
+	\item Fuzz the application by sending larger buffers of valid Characters
+	\item Once a buffer size has been confirmed, append full ASCII table to buffer
+	\item Confirm bad characters in payload, remove them from the buffer and repeat step.
+	\item Confirm the crash overwrites EIP and ESP with debugger running
+	\item Use msf\_pattern\_create to create new buffer of correct size
+	\item Confirm the crash with new patterned buffer and extract EIP
+	\item use msf\_pattern\_find to find offset of EIP buffer
+	\item use debugging tool to find a JMP ESP instruction
+	\item use location of JMP ESP (Little Endian) to route execution to ESP
+	\item place breakpoint on JMP ESP instruction and run exploit again
+	\item Single step through the code to ensure that it is loading to the correct address (you may need to adjust the ESP)
+	\item Create a malicious payload and insert into buffer (keeping buffer size the same) and ensuring that a sufficiently sized NOP sled has been included.
+	\item Test execution on local copy
+	\item Exploit
+\end{enumerate}
+\end{tcolorbox}
+\begin{multicols}{2}
+\begin{tcolorbox}[breakable,title=Windows Debugging Tools]
+\textbf{Immunity Debugger}:\\
+Immunity debugger contains mona.py which can be used to enumerate a vulnerable binary, it has the following commands:\\
+\begin{itemize}
+	\itemsep0em
+	\item \textit{!mona modules}\\Lists all loaded modules
+	\item\textit{!mona noaslr}\\Lists all loaded modules without ASLR
+	\item\textit{!mona nosafesehasl}\\Lists all loaded modules without safe SEH or ASLR
+	\item\textit{!mona nosafeseh}\\Lists all loaded modules without safe SEH
+	\item\textit{!mona find -s ``$\backslash$xFF$\backslash$xFF'' -m ``module.dll''}\\ finds all addresses that match search term
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Linux Debugging Tools]
+\begin{itemize}
+	\itemsep0em 
+	\item EDB\\Use the OpCodeSearcher plugin to find ESP - EIP ensuring that the memory region has execute permissions.
+	\item GDB\\ You are on your own.
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Payload Generation]
+\textbf{msfvenom Payloads}\\
+List payloads with: msfvenom -l payloads
+\begin{itemize}
+	\itemsep0em
+	\item shell/reverse\_tcp
+	\item shell/bind\_tcp
+\end{itemize}
+\textbf{msfvenom formats}\\List formats with msfvenom -l formats
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{asp(x)}
+	\item \textbf{dll}
+	\item \textbf{elf(-so)}
+	\item \textbf{exe(-service)}
+	\item \textbf{hta-psh} hypertext application with embedded powershell
+	\item \textbf{vbs}
+	\item \textbf{c}
+	\item \textbf{ps1}
+	\item \textbf{python}
+	\item \textbf{raw}
+	\item \textbf{rb}
+	\item \textbf{sh}
+\end{itemize}
+\end{tcolorbox}
+\end{multicols}
+\newpage
+\Huge{\textbf{Windows Privesc}}
+\newline
+\normalsize
+\begin{tcolorbox}[breakable,title=Generic]
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{Windows Exploit Suggester}
+	\item \textbf{PSEXEC /s}
+	\item Search for passwords in config files
+	\item Search for passwords in Registry
+	\item Search for sysprep.inf, sysprep.xml and Unattended.xml
+	\item Group Policy Preference (Hardcoded encryption key)
+	\item Install MSI as system user
+	\item Check permissions for running services
+	\item Check scheduled tasks
+	\item Windows Version Specific Exploits
+\end{itemize}
+\end{tcolorbox}
+\begin{multicols}{2}
+\begin{tcolorbox}[breakable,title=Windows XP]
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{upnphost service}\\Writeable by Authenticated users
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Windows Vista]
+	
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Windows 7]
+	
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Windows 8]
+	
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Windows 8.1]
+	
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Windows 10]
+	
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Windows Server 2003]
+	
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Windows Server 2008/R2]
+	
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Windows Server 2012]
+	
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Windows Server 2016]
+	
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Windows Server 2019]
+	
+\end{tcolorbox}
+\end{multicols}
+\newpage
+\Huge{\textbf{Linux Privesc}}
+\newline
+\normalsize
+\begin{tcolorbox}[breakable,title=checklist]
+\begin{itemize}
+	\itemsep0em
+	\item SUID Binaries
+	\item Saved credentials
+	\item Vulnerable scripts
+	\item Service path vulnerabilities
+	\item Sudo config
+	\item Kernel Exploits
+	\item SSH keys
+\end{itemize}
+\end{tcolorbox}
+\begin{multicols}{2}
+\begin{tcolorbox}[breakable,title=Scripts]
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{linenum.sh}
+	\item \textbf{linuxprivchecker.py}
+	\item \textbf{unix-privesc-check}
+	\item \textbf{lynis}
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Shell escape sequences]
+	
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=TTY upgrades]
+
+\end{tcolorbox}
+
+\end{multicols}
+\newpage
+\Huge{\textbf{Password Cracking}}
+\newline
+\normalsize
+\begin{multicols}{2}
+\begin{tcolorbox}[breakable,title=john]
+\textbf{simple crack}\\
+john --wordlist=wordlist.txt hashfile\\
+\textbf{Zip file}\\
+zip2john file.zip > file.john\\
+john --format=zip file.john\\
+\textbf{NTLMv2}\\
+john --format=netntlmv2 hash.txt\\
+\textbf{Kerberoast}\\
+kirbi2john hashes.kirbi > kirbi.john\\
+john --wordlist=password.lst kirbi.john\\
+\textbf{Show john results}\\
+john --show target.txt
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=hashcat]
+\textbf{Simple crack}\\ hashcat -m <hashmode> <hashfile> <wordlist>\\
+\textbf{Common hashcat modes}
+\vspace{-1em}
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{0} - MD5
+	\item \textbf{100} - SHA1
+	\item \textbf{1000} - NTLM
+	\item \textbf{1100} - Domain Cached Credentials
+	\item \textbf{1700} - SHA512
+	\item \textbf{13100} - Kerberos TGS-REP etype 23
+\end{itemize}
+\textbf{Show hashcat results}\\hashcat --show <hashfile> -m <hash mode>
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Linux shadow hashes]
+	\begin{itemize}
+		\itemsep0em
+		\item	\textbf{\$1} - MD5
+		\item \textbf{\$2} - Blowfish
+		\item \textbf{\$2a} - eksblowfish
+		\item \textbf{\$5} - SHA-256
+		\item \textbf{\$6} - SHA-512
+	\end{itemize}
+\textbf{Generating a Linux Shadow hash}\\
+openssl passwd -1 -salt <salt> <password>
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=online hash crackers]
+\begin{itemize}
+	\itemsep0em
+	\item Crackstation
+\end{itemize}
+\end{tcolorbox}
+\end{multicols}
+\newpage
+\Huge{\textbf{Kerberoasting}}
+\newline
+\normalsize
+\vspace{1cm}
+\begin{tcolorbox}[breakable,title=Notes]
+Kerberoasting is a post-exploitation attack which extracts service account credential hashes for offline cracking.
+Kerberoasting requires being within a domain context (Machine account, Domain User account).
+\begin{enumerate}
+	\itemsep0em
+	\item Gain Domain Credentials
+	\item Enumerate SPNs on network
+	\item Request TGS for Service
+	\item Dump ticket from memory
+	\item Crack ticket offline to get plaintext credentials for service account
+	\item Use credentials to:
+	\subitem Generate fake tickets
+	\subitem Log in as service account
+\end{enumerate}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Windows Tools and Scripts]
+\begin{itemize}
+	\itemsep0em
+	\item Invoke-Kerberoast.ps1\footnote{https://github.com/EmpireProject/Empire/blob/master/data/module
+		source/credentials/Invoke-Kerberoast.ps1}
+	\item setSPN.exe
+	\item Mimikatz.exe
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Linux Tools and Scripts]
+\begin{itemize}
+	\itemsep0em
+	\item Impacket/GetNPUsers.py
+\end{itemize}
+\end{tcolorbox}
+\newpage
+\Huge{\textbf{Reference}}
+\newline
+\normalsize
+\begin{tcolorbox}[breakable,title=IIS Versions]
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{IIS 1.0} Windows NT 3.51
+	\item \textbf{IIS 2.0} Windows NT 4.0
+	\item \textbf{IIS 3.0} Windows NT 4.0 SP 2
+	\item \textbf{IIS 4.0} Windows NT 4.0 Option Pack
+	\item \textbf{IIS 5.0} Windows 2000
+	\item \textbf{IIS 5.1} Windows XP Professional
+	\item \textbf{IIS 6.0} Windows Server 2003 / Windows XP Pro x64
+	\item \textbf{IIS 7.0} Windows Server 2008 / Windows Vista
+	\item \textbf{IIS 7.5} Windows Server 2008 R2 / Windows 7
+	\item \textbf{IIS 8.0} Windows Server 2012 / Windows 8
+	\item \textbf{IIS 8.5} Windows Server 2012 R2 / Windows 8.1
+	\item \textbf{IIS 10.0} Windows Server 2016/ Windows 10 and onwards
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Common MAC Address vendors]
+VMWare 00:50:56\\
+VMWare 00:0C:29\\
+VMWare 00:05:69\\
+VMWare 00:1C:14\\
+Virtualbox 08:00:27	\\
+Virtualbox 52:54:00 \\
+Virtualbox 00:21:F6
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Active Directory SRV records]
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{\_gc.\_tcp.<domain fqdn>} - Global Catalogue Server
+	\item \textbf{\_ldap.\_tcp.<domain fqdn>} - LDAP server
+	\item \textbf{\_kerberos.\_tcp.<domain fqdn>} - Kerberos Server (KDC)
+	\item \textbf{\_kpasswd.\_tcp.<endpoint fqdn>} - Kerberos Server ()
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Wireshark Filters]
+	Capture Filters:
+	
+	Packet Filters:
+\end{tcolorbox}
+\end{document}
