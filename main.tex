@@ -488,9 +488,48 @@ List payloads with: msfvenom -l payloads
 	\item Check permissions for running services
 	\item Check scheduled tasks
 	\item Windows Version Specific Exploits
+	\item Dump Password hashes
 \end{itemize}
 \end{tcolorbox}
 \begin{multicols}{2}
+\begin{tcolorbox}[breakable,title=JuicyPotato PrivEsc]
+\textbf{Requirements}\\
+Ran in the context of a Windows Service Account\\
+\newline
+\textbf{Affected Versions}
+\begin{itemize}
+	\itemsep0em
+	\item Windows 7 Enterprise
+	\item Windows 8.1 Enterprise
+	\item Windows 10 Professional <1809
+	\item Windows Server 2008 R2
+	\item Windows Server 2012
+	\item Windows Server 2012 R2
+	\item Windows Server 2019
+\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=RoguePotato PrivEsc]
+	\textbf{Requirements}\\
+	Ran in the context of a Windows Service Account\\
+	\newline
+	\textbf{Affected Versions}
+	\begin{itemize}
+		\itemsep0em
+		\item Windows 10 Professional >=1809
+		\item Windows Server 2019
+	\end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Windows x86 'afd.sys' PrivEsc (MS11-046)]
+\textbf{Requirements}\\
+Local Shell on host\\
+\textbf{Affected Versions}
+\begin{itemize}
+	\itemsep0em
+	\item Windows XP Pro (x86)
+	\item Windows Vista (x86)
+	\item Windows 7 (x86)
+\end{itemize}
+\end{tcolorbox}
 \begin{tcolorbox}[breakable,title=Windows XP]
 \begin{itemize}
 	\itemsep0em
@@ -525,7 +564,6 @@ List payloads with: msfvenom -l payloads
 	
 \end{tcolorbox}
 \begin{tcolorbox}[breakable,title=Windows Server 2019]
-	
 \end{tcolorbox}
 \end{multicols}
 \newpage
@@ -542,6 +580,7 @@ List payloads with: msfvenom -l payloads
 	\item Sudo config
 	\item Kernel Exploits
 	\item SSH keys
+	\item Crack shadow password hashes
 \end{itemize}
 \end{tcolorbox}
 \begin{multicols}{2}
@@ -555,12 +594,16 @@ List payloads with: msfvenom -l payloads
 \end{itemize}
 \end{tcolorbox}
 \begin{tcolorbox}[breakable,title=Shell escape sequences]
-	
+\textbf{Python}\\
+import pty; pty.spawn("/bin/bash")\\
+\textbf{Vim}\\
+:set shell=/bin/sh\\
+:shell\\
+\textbf{nmap} - Versions 2.02 - 5.21 Inclusive\\
+nmap --interactive\\
+\textbf{awk}\\
+awk 'BEGIN {system("/bin/sh")}'
 \end{tcolorbox}
-\begin{tcolorbox}[breakable,title=TTY upgrades]
-
-\end{tcolorbox}
-
 \end{multicols}
 \newpage
 \Huge{\textbf{Password Cracking}}
@@ -648,7 +691,16 @@ Kerberoasting requires being within a domain context (Machine account, Domain Us
 \begin{itemize}
 	\itemsep0em
 	\item Impacket/GetNPUsers.py
+	\item hashcat
+	\item john
+	\item tgsrepcrack.py
 \end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[title={Script to convert from Invoke-Kerberoast csv to Hashcat if not copy/pasted},breakable]
+	\footnotesize
+	\begin{minted}[linenos,numbersep=5pt,breaklines]{bash}
+cat kerberoast.csv | iconv -f UTF-16 -t ASCII | cut -d ',' -f 2 | tail -n +3 | tr -d '\n'| sed -e 's/\"\"/\n/g'| sed -e 's/\"//g' > tickets.hashcat
+	\end{minted}
 \end{tcolorbox}
 \newpage
 \Huge{\textbf{Reference}}
@@ -670,6 +722,13 @@ Kerberoasting requires being within a domain context (Machine account, Domain Us
 	\item \textbf{IIS 8.5} Windows Server 2012 R2 / Windows 8.1
 	\item \textbf{IIS 10.0} Windows Server 2016/ Windows 10 and onwards
 \end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=Creating Powershell encoded payloads]
+	\begin{enumerate}
+		\itemsep0em
+		\item Convert to UTF-16LE
+		\item base64 encode
+	\end{enumerate}
 \end{tcolorbox}
 \begin{tcolorbox}[breakable,title=Common MAC Address vendors]
 VMWare 00:50:56\\
@@ -693,5 +752,8 @@ Virtualbox 00:21:F6
 	Capture Filters:
 	
 	Packet Filters:
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,title=tcpdump flags]
+	
 \end{tcolorbox}
 \end{document}
